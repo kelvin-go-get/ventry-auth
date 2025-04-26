@@ -1,36 +1,155 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ventry - Project Setup Guide
 
-## Getting Started
+Welcome! 👋  
+This guide will help you run the project locally, even if you don't have coding experience.
 
-First, run the development server:
+## Project Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+This project has two parts:
+
+- **Client (Frontend)**: Built using Next.js and TypeScript
+- **Server (Backend)**: Built using Node.js with TypeScript
+
+We also use:
+
+- PostgreSQL database (managed with pgAdmin 7)
+
+---
+
+## 1. Requirements
+
+Please install the following before starting:
+
+- [Node.js](https://nodejs.org/) (version 18 or above)
+- [PostgreSQL + pgAdmin 7](https://www.postgresql.org/download/)
+
+---
+
+## 2. Project Structure
+
+/ventry
+├── /client # Frontend (Next.js)
+└── /server # Backend (Node.js + Express)
+
+Each folder has its own environment (`.env`) file you need to create.
+
+---
+
+## 3. Setting Up PostgreSQL
+
+1. Open pgAdmin 7
+2. Create a new Database called: `ventry`
+3. Set up a User with these credentials:
+   - Username: `postgres`
+   - Password: `9046`
+4. Make sure port `5432` is open (default for PostgreSQL)
+
+---
+
+## 4. Setting up Backend (Server)
+
+1. Open a Terminal or Command Prompt
+2. Navigate to the server folder:
+   ```bash
+   cd server
+   ```
+
+Install the dependencies:
+npm install
+
+```
+3. Create a `.env` file in the `server` folder with the following content:
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+DB_USER=postgres
+DB_PASSWORD=9046
+DB_NAME=ventry
+DB_HOST=localhost
+DB_PORT=5432
+JWT_SECRET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoidXNlckBleGFtcGxlLmNvbSIsImlhdCI6MTc0NTU4ODY3NywiZXhwIjoxNzQ1NTkyMjc3fQ.pU-S8sjjZmNZ7G-OdZnMlBI13T4OBlJwn_DOcYvhaTo
+INVITE_ONLY=true
+JWT_EXPIRATION=1h
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+````
+4. Start the server:
+```bash
+npm run dev
+````
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+5. The server should now be running at `http://localhost:5000`
+6. If you see any errors, please check the console for details.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 5. Setting up Frontend (Client)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Open a new Terminal or Command Prompt
+2. Navigate to the client folder:
+   ```bash
+   cd client
+   ```
+3. Install the dependencies:
+   ```bash
+   npm install
+   ```
+4. Create a `.env` file in the `client` folder with the following content:
+   ```
+   NEXT_PUBLIC_API_URL=http://localhost:5000
+   ```
+5. Start the client:
+   ```bash
+   npm run dev
+   ```
+6. The client should now be running at `http://localhost:3000`
+7. If you see any errors, please check the console for details.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 6. Accessing the Application
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Open your web browser and go to `http://localhost:3000`
+- You should see the Ventry application running.
+- If you encounter any issues, please check the console for errors and ensure both the client and server are running.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 7. Troubleshooting
+
+- If you encounter any issues, please check the console for errors and ensure both the client and server are running.
+- Make sure PostgreSQL is running and the database is set up correctly.
+- If you have any questions or need help, feel free to reach out to the project maintainers.
+
+---
+
+# Testing the project
+
+- You can test registration and login with sample requests using a REST client (like Thunder Client for VSCode) or Postman.
+- Here are some sample requests you can use:
+
+### Registration
+
+```
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com",
+  "password": "testpassword"
+}
+```
+
+### Login
+
+```
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com",
+  "password": "testpassword"
+}
+```
+
+# 🎉 That's it!
+
+- If you follow the steps carefully, the app should be running on your computer!
