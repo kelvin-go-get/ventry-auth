@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { login, register } from "@/app/service/authService";
+import { login, register, requestAccessCode } from "@/app/service/authService";
 import toast, { Toaster } from "react-hot-toast";
 
 const SignIn = () => {
@@ -12,38 +12,69 @@ const SignIn = () => {
   const [signUpPassword, setSignUpPassword] = useState("");
   const [accessCode, setAccessCode] = useState("");
   const [showSignUp, setShowSignUp] = useState(false);
+  const [timer, setTimer] = useState<number>(0);
+  const [isSendingCode, setIsSendingCode] = useState<boolean>(false);
+  const [canRegister, setCanRegister] = useState<boolean>(false);
+
+  useEffect(() => {
+    let countdown: NodeJS.Timeout;
+    if (timer > 0) {
+      countdown = setInterval(() => setTimer((prev) => prev - 1), 1000);
+    } else {
+      setCanRegister(true); // Enable register button after timer finishes
+    }
+
+    // Cleanup interval on unmount or when timer reaches 0
+    return () => clearInterval(countdown);
+  }, [timer]);
 
   const handleLogin = async () => {
     try {
       const data = await login(signInEmail, signInPassword);
       sessionStorage.setItem("authToken", data.token);
       sessionStorage.setItem("userData", JSON.stringify(data.user));
-      console.log("Login Success:", data);
       toast.success(`Welcome, ${data.user.email}! Redirecting...`, {
         duration: 3000,
       });
     } catch (error: unknown) {
-      console.error("Login Failed:", error);
       const errorMessage =
         error instanceof Error ? error.message : "An unknown error occurred";
       toast.error(errorMessage);
     }
   };
+
   const handleRegister = async () => {
     try {
       const data = await register(signUpEmail, signUpPassword, accessCode);
       toast.success("Registration successful! You can now login.");
-      console.log("Register Success:", data);
       setTimeout(() => {
         setShowSignUp(false);
       }, 2000);
     } catch (error: unknown) {
-      console.error("Register Failed:", error);
       const errorMessage =
         error instanceof Error
           ? error.message
           : "Registration failed! Please try again.";
       toast.error(errorMessage);
+    }
+  };
+
+  const handleRequestAccessCode = async () => {
+    try {
+      setIsSendingCode(true); // Disable the button while sending code
+      const response = await requestAccessCode(signUpEmail);
+
+      if (!response.ok) {
+        throw new Error("Failed to send access code.");
+      }
+
+      toast.success("Access code sent! You have 60 seconds to use it.");
+      setTimer(60); // Start 60-second countdown
+      setIsSendingCode(false); // Re-enable the button
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      toast.error("Failed to send access code.");
+      setIsSendingCode(false); // Enable the button again if there was an error
     }
   };
 
@@ -137,14 +168,33 @@ const SignIn = () => {
                   className="relative z-10 w-full text-center bg-transparent outline-none text-white placeholder-white/70 font-semibold py-3 px-4"
                 />
               </div>
-              <button
-                onClick={handleRegister}
-                className="group relative w-full cursor-pointer bg-black px-4 py-3 rounded-lg font-semibold text-sm border hover:border-transparent border-[#D9B23D] transition-all duration-300"
-              >
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#D9B23D] via-[#D9BE6C] to-[#D9B23D]">
-                  Request Invite Code
-                </span>
-              </button>
+
+              {/* Conditional Buttons */}
+              <div className="flex justify-center mt-6">
+                {timer > 0 ? (
+                  <button
+                    disabled
+                    className="w-[30%] cursor-not-allowed bg-[linear-gradient(180deg,#D9B23D,#D9BE6C,#D9B23D)] border-2 border-amber-50 text-black font-bold text-2xl py-3 rounded-xl shadow-gold"
+                  >
+                    {timer}s
+                  </button>
+                ) : accessCode ? (
+                  <button
+                    onClick={handleRegister}
+                    className="group relative w-full cursor-pointer bg-black px-4 py-3 rounded-lg font-semibold text-sm border hover:border-transparent border-[#D9B23D] transition-all duration-300"
+                  >
+                    Register
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleRequestAccessCode}
+                    disabled={isSendingCode}
+                    className="group relative w-full cursor-pointer bg-black px-4 py-3 rounded-lg font-semibold text-sm border hover:border-transparent border-[#D9B23D] transition-all duration-300"
+                  >
+                    {isSendingCode ? "Sending..." : "Request Invite Code"}
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Access Accepted button */}
