@@ -1,39 +1,34 @@
-# Ventry - Project Setup Guide
+# 🚀 Ventry - Full Stack Project
 
-Welcome! 👋  
-This guide will help you run the project locally, even if you don't have coding experience.
+![Project Architecture](https://img.shields.io/badge/architecture-full%20stack-blue) 
+![Frontend](https://img.shields.io/badge/frontend-next.js-000000?logo=next.js) 
+![Backend](https://img.shields.io/badge/backend-node.js-339933?logo=node.js) 
+![Database](https://img.shields.io/badge/database-postgresql-4169E1?logo=postgresql)
 
-## Project Overview
+A modern web application with Next.js frontend and Node.js backend. This guide will walk you through the complete setup process.
 
-This project has two parts:
+## 📋 Table of Contents
+- [Project Structure](#-project-structure)
+- [Prerequisites](#-prerequisites)
+- [Database Setup](#%EF%B8%8F-database-setup)
+- [Backend Setup](#-backend-setup)
+- [Frontend Setup](#-frontend-setup)
+- [Running the Application](#-running-the-application)
+- [API Testing](#-api-testing)
+- [Troubleshooting](#-troubleshooting)
 
-- **Client (Frontend)**: Built using Next.js and TypeScript
-- **Server (Backend)**: Built using Node.js with TypeScript
+## 📂 Project Structure
 
-We also use:
-
-- PostgreSQL database (managed with pgAdmin 7)
-
----
-
-## 1. Requirements
-
-Please install the following before starting:
-
-- [Node.js](https://nodejs.org/) (version 18 or above)
-- [PostgreSQL + pgAdmin 7](https://www.postgresql.org/download/)
-
----
-
-## 2. Project Structure
-
-/ventry
-├── /client # Frontend (Next.js)
-└── /server # Backend (Node.js + Express)
-
-Each folder has its own environment (`.env`) file you need to create.
-
----
+```bash
+ventry/
+├── client/       # Next.js frontend (Port: 3000)
+│   ├── public/
+│   ├── src/
+│   └── package.json
+└── server/       # Node.js backend (Port: 5000)
+    ├── src/
+    └── package.json
+```
 
 ## 3. Setting Up PostgreSQL
 
@@ -54,13 +49,16 @@ Each folder has its own environment (`.env`) file you need to create.
    cd server
    ```
 
-Install the dependencies:
-npm install
+   Install the dependencies:
 
-```
+   ```bash
+   npm install
+   ```
+
 3. Create a `.env` file in the `server` folder with the following content:
-```
 
+
+```bash
 DB_USER=postgres
 DB_PASSWORD=9046
 DB_NAME=ventry
@@ -70,7 +68,7 @@ JWT_SECRET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoidXNl
 INVITE_ONLY=true
 JWT_EXPIRATION=1h
 
-````
+```
 4. Start the server:
 ```bash
 npm run dev
@@ -150,6 +148,6 @@ Content-Type: application/json
 }
 ```
 
-# 🎉 That's it!
+## 🎉 That's it!
 
 - If you follow the steps carefully, the app should be running on your computer!
